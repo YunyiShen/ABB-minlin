@@ -4,7 +4,7 @@ library(caret)
 library(pROC)
 library(randomForest)
 
-set.seed(42)
+set.seed(43)
 rasters15 <- list.files("./data/Raster", full.names = T)
 rasters15 <- lapply(rasters15, raster)
 mystack <- stack(rasters15)
@@ -40,15 +40,19 @@ minlinres <- lapply(1:5,function(i, Y, X, Folds){
     as.matrix( xx[fold,])
   }, Folds[[i]])
   
-  #fit_minlin <- minlinlogistic(Y_train,X_train, boot = 0, method = "SANN")
-  fitts <- lapply(1:10, function(i, Y,X){
-    minlinlogistic(Y,X, boot = 0, method = "SANN")
-  }, Y,X)
+  fit_minlin <- minlinlogistic(Y_train,X_train, boot = 0, 
+                               a=100, method = "SANN",
+                               control = list(maxit = 15000))
+  #fitts <- lapply(1:10, function(i, Y,X){
+    #minlinlogistic(Y,X, boot = 0, method = "SANN")
+  #  minlinlogistic(Y,X, boot = 0, control = list(maxit = 5000))
+  #}, Y,X)
   
-  parss <- lapply(fitts, function(w){w$fit$opt$par})
-  predict_minlinr <- predict_minlin(colMeans( Reduce(rbind,parss)),X_test)
+  #parss <- lapply(fitts, function(w){w$fit$opt$par})
+  #predict_minlinr <- predict_minlin(colMeans( Reduce(rbind,parss)),X_test)
+  predict_minlinr <- predict_minlin(fit_minlin$fit$opt$par,X_test)
   roc_minlin <- roc(Y_test, predict_minlinr$predicted)
-  return(list(fit = fitts, predict = predict_minlinr, roc = roc_minlin))
+  return(list(fit = fit_minlin, predict = predict_minlinr, roc = roc_minlin))
 }, Y,X,Folds)
 
 

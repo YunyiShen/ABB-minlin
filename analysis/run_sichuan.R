@@ -44,9 +44,11 @@ Xpred <- lapply(Xpred, as.matrix)
 source("./R/minlinlogistic.R")
 
 set.seed(12345)
-fit <- minlinlogistic(Y,X, boot = 0, method = "SANN")
+#fit <- minlinlogistic(Y,X, boot = 0, soft = FALSE,method = "SANN")
+fit <- minlinlogistic(Y,X, boot = 0, a = 100,method = "SANN",control = list(maxit = 15000))
 fitts <- lapply(1:10, function(i, Y,X){
-  minlinlogistic(Y,X, boot = 0, method = "SANN")
+  #minlinlogistic(Y,X, boot = 0, soft = FALSE, method = "SANN")
+  minlinlogistic(Y,X, boot = 0, a = 100,method = "SANN", control = list(maxit = 15000))
 }, Y,X)
 
 parss <- lapply(fitts, function(w){w$fit$opt$par})
@@ -75,8 +77,8 @@ hist(glmfit$fitted.values-rffit$predicted)
 hist(fit$fit$predicted-rffit$predicted)
 
 # make predictions, min-linear
-#predicted_sichuan <- predict_minlin(fit$fit$opt$par, Xpred)
-predicted_sichuan <- predict_minlin(colMeans( Reduce(rbind,parss)), Xpred)
+predicted_sichuan <- predict_minlin(fit$fit$opt$par, Xpred)
+#predicted_sichuan <- predict_minlin(colMeans( Reduce(rbind,parss)), Xpred)
 
 par(mfrow = c(1,2))
 occup <- template

@@ -108,3 +108,9 @@ occupglm <- template
 values(occupglm) <- predicted_glm
 plot(occupglm)
 writeRaster(occupglm, "./Res/bear_glm_pred.tif")
+
+# bootstrap minlin
+boot_sample <- minlinlogistic(Y,X, boot = 100, a = 100,method = "SANN",control = list(maxit = 15000))
+save(boot_sample,file = "./Res/bootstrap_samples.rda")
+boot_par <- sapply(boot_sample$boot, function(w){w$par}) |> t()
+apply(boot_par, 2, sd)

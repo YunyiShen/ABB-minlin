@@ -59,6 +59,7 @@ plot(roc(Y, fit$fit$predicted))
 # random forest
 library(randomForest)
 rffit <- randomForest(R~., data = full[,-c(1:2)])
+rffit_class <- randomForest(as.factor(R)~., data = full[,-c(1:2)])
 plot(roc(Y, rffit$predicted))
 
 # logistic

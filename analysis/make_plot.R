@@ -29,8 +29,10 @@ p1 <- gplot(minlin_pred) +
 p1
 
 p2 <- gplot(minlin_limit) + 
-  geom_tile(aes(fill = factor(value, labels = c("Conservation","Topology", "Human", "Forest"))))+
-  scale_fill_manual(values = c("gold", "grey", "red", "forestgreen"),na.value="transparent",na.translate = F)+
+  #geom_tile(aes(fill = factor(value, labels = c("Conservation","Topology", "Human", "Forest"))))+
+  #scale_fill_manual(values = c("gold", "grey", "red", "forestgreen"),na.value="transparent",na.translate = F)+
+  geom_tile(aes(fill = factor(value, labels = c("Topology", "Human", "Forest"))))+
+  scale_fill_manual(values = c("grey", "red", "forestgreen"),na.value="transparent",na.translate = F)+
   labs(fill = "Limiting Factor", x = "", y="")  + 
   ggsn::scalebar(x.min=125000, x.max=250000, y.min = 2.75e6, y.max = 3e6,
                  dist = 200,dist_unit = "km", transform = F,
@@ -84,3 +86,4 @@ library(ggpubr)
 ggarrange(p1,p2, p3,p4, nrow = 2, ncol = 2,labels = "AUTO", align = "hv")
 
 ggsave("./Res/sichuan_maps.pdf", width = 12, height = 10)
+ggsave("./Res/sichuan_maps.png", width = 12, height = 10)
